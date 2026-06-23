@@ -1,0 +1,6 @@
+transaction_id,asset_class,notional_amount,rejection_reason
+TXN_992,FX,-45000,Non-positive notional_amount: -45000.0
+TXN_993,,8900000,Missing or blank asset_class
+TXN_995,EQUITY,abc123,Non-numeric notional_amount: 'abc123'
+TXN_997,FX,,Non-numeric notional_amount: ''
+TXN_998,,-250000,Missing or blank asset_class

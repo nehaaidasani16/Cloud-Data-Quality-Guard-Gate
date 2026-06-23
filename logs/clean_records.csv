@@ -1,0 +1,4 @@
+transaction_id,asset_class,notional_amount
+TXN_991,EQUITY,1500000
+TXN_994,BOND,2200000
+TXN_996,BOND,100000

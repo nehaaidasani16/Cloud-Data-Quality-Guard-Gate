@@ -1,0 +1,13 @@
+2026-06-24 01:15:50,795 | INFO | Found credentials in shared credentials file: ~/.aws/credentials
+2026-06-24 01:15:51,903 | INFO | Connecting to S3 and downloading 'transaction_ledger.csv' from bucket 'cloud-data-quality-check'...
+2026-06-24 01:18:43,175 | INFO | Download successful -> data/incoming_ledger.csv
+2026-06-24 01:18:43,202 | INFO | Starting Data Quality Guard Sweep on data/incoming_ledger.csv
+2026-06-24 01:18:43,205 | INFO | [CLEAN] TXN_991 passed validation.
+2026-06-24 01:18:43,211 | WARNING | [QUARANTINED] TXN_992 -> Non-positive notional_amount: -45000.0
+2026-06-24 01:18:43,211 | WARNING | [QUARANTINED] TXN_993 -> Missing or blank asset_class
+2026-06-24 01:18:43,211 | INFO | [CLEAN] TXN_994 passed validation.
+2026-06-24 01:18:43,229 | WARNING | [QUARANTINED] TXN_995 -> Non-numeric notional_amount: 'abc123'
+2026-06-24 01:18:43,229 | INFO | [CLEAN] TXN_996 passed validation.
+2026-06-24 01:18:43,229 | WARNING | [QUARANTINED] TXN_997 -> Non-numeric notional_amount: ''
+2026-06-24 01:18:43,229 | WARNING | [QUARANTINED] TXN_998 -> Missing or blank asset_class
+2026-06-24 01:18:43,238 | INFO | Sweep complete at 2026-06-23T19:48:43+00:00 | Total: 8 | Clean: 3 | Quarantined: 5
