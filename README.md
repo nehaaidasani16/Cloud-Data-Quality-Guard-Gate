@@ -3,6 +3,8 @@
 A Python-based automated data validation pipeline that pulls incoming financial transaction files from an AWS S3 bucket, screens every record against business validation rules, and separates clean records from invalid ones — preventing corrupted data from ever reaching downstream production systems.
 
 
+ Project Demo (index.html): https://nehaaidasani16.github.io/Cloud-Data-Quality-Guard-Gate/
+
 ## Overview
 
 Financial institutions receive large transaction files daily from external vendors, hedge funds, and clearing houses. These files are dropped into cloud storage (AWS S3) and must be validated before they can safely enter core systems.
