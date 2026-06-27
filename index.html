@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#111;font-family:'Courier New',monospace;padding:16px;min-height:100vh;display:flex;align-items:flex-start;justify-content:center}
+.terminal{background:#1a1a1a;border-radius:12px;overflow:hidden;width:100%;max-width:620px;box-shadow:0 8px 32px rgba(0,0,0,.6)}
+.topbar{background:#2d2d2d;padding:10px 16px;display:flex;align-items:center;gap:8px}
+.dot{width:12px;height:12px;border-radius:50%}
+.filename{color:#888;font-size:12px;margin-left:8px}
+.body{padding:18px 20px;font-size:13px;line-height:1.85;min-height:360px}
+.line{opacity:0;transform:translateY(4px);transition:opacity .3s ease,transform .3s ease;white-space:pre-wrap;word-break:break-all}
+.line.show{opacity:1;transform:translateY(0)}
+.prompt{color:#4ade80}.cmd{color:#e8e8e8}.info{color:#60a5fa}.ok{color:#4ade80}
+.warn{color:#facc15}.err{color:#f87171}.dim{color:#6b7280}.result{color:#67e8f9}
+.sep{color:#374151}.engine{color:#a78bfa}.aws{color:#fbbf24}
+.cursor{display:inline-block;width:8px;height:14px;background:#4ade80;margin-left:2px;animation:blink .8s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.btn{background:#f57c00;color:#fff;border:none;border-radius:6px;padding:8px 20px;font-size:12px;font-family:inherit;cursor:pointer;margin:12px 20px 16px;display:block;transition:background .2s}
+.btn:hover{background:#e65100}
+.progress{height:3px;background:#f57c00;width:0;transition:width .1s linear}
+</style>
+</head>
+<body>
+<div class="terminal">
+  <div class="topbar">
+    <div class="dot" style="background:#ff5f57"></div>
+    <div class="dot" style="background:#ffbd2e"></div>
+    <div class="dot" style="background:#28c840"></div>
+    <span class="filename">s3_guard_gate.py — Cloud Data Quality Guard Gate</span>
+  </div>
+  <div class="progress" id="prog"></div>
+  <div class="body" id="body">
+    <div class="line show"><span class="prompt">$</span> <span class="cmd">python s3_guard_gate.py</span><span class="cursor"></span></div>
+  </div>
+  <button class="btn" id="btn" onclick="runDemo()">▶ Run Demo</button>
+</div>
+
+<script>
+const lines = [
+  {t:600,  cls:'sep',    txt:'════════════════════════════════════════════'},
+  {t:700,  cls:'engine', txt:'     Cloud Data Quality Guard Gate'},
+  {t:800,  cls:'sep',    txt:'════════════════════════════════════════════'},
+  {t:1100, cls:'aws',    txt:'\n📡 Authenticating with AWS via IAM credentials...'},
+  {t:1600, cls:'ok',     txt:'✅ IAM authentication successful.'},
+  {t:2000, cls:'aws',    txt:'📡 Connecting to S3 bucket: capco-validation-vault-2026...'},
+  {t:2500, cls:'ok',     txt:'✅ S3 connection established.'},
+  {t:2900, cls:'aws',    txt:'⬇️  Downloading incoming_ledger.csv from S3...'},
+  {t:3400, cls:'ok',     txt:'✅ File downloaded successfully → downloaded_ledger.csv\n'},
+  {t:3800, cls:'info',   txt:'⚡ Starting Data Quality Guard Sweep...'},
+  {t:4000, cls:'info',   txt:'   Processing 5 financial transaction records...\n'},
+  {t:4400, cls:'dim',    txt:'[GUARD GATE] Processing: TXN_991'},
+  {t:4700, cls:'ok',     txt:'✅ [CLEAN DATA]  TXN_991 — EQUITY — ₹1,500,000.00 — approved for clearing'},
+  {t:5000, cls:'dim',    txt:'[GUARD GATE] Processing: TXN_992'},
+  {t:5300, cls:'err',    txt:'🚨 [QUARANTINE]  TXN_992 — BLOCKED — Invalid amount: -45000.0'},
+  {t:5600, cls:'dim',    txt:'[GUARD GATE] Processing: TXN_993'},
+  {t:5900, cls:'err',    txt:'🚨 [QUARANTINE]  TXN_993 — BLOCKED — Asset class is blank'},
+  {t:6200, cls:'dim',    txt:'[GUARD GATE] Processing: TXN_994'},
+  {t:6500, cls:'ok',     txt:'✅ [CLEAN DATA]  TXN_994 — BOND — ₹2,200,000.00 — approved for clearing'},
+  {t:6800, cls:'dim',    txt:'[GUARD GATE] Processing: TXN_995'},
+  {t:7100, cls:'err',    txt:'🚨 [QUARANTINE]  TXN_995 — BLOCKED — Invalid amount: 0.0\n'},
+  {t:7500, cls:'sep',    txt:'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'},
+  {t:7600, cls:'result', txt:'[RESULT] Sweep complete. 5 records processed.'},
+  {t:7700, cls:'ok',     txt:'[RESULT] Clean records approved  : 2'},
+  {t:7800, cls:'err',    txt:'[RESULT] Records quarantined     : 3'},
+  {t:7900, cls:'ok',     txt:'[RESULT] Program crashes         : 0'},
+  {t:8000, cls:'sep',    txt:'━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n'},
+  {t:8300, cls:'aws',    txt:'☁️  Downstream banking systems protected.'},
+  {t:8600, cls:'info',   txt:'[ENGINE] Guard sweep complete. Connection closed.\n'},
+  {t:8900, cls:'prompt', txt:'$ ▊'},
+];
+
+function runDemo(){
+  const body=document.getElementById('body');
+  const btn=document.getElementById('btn');
+  const prog=document.getElementById('prog');
+  btn.disabled=true; btn.textContent='⏳ Running...';
+  const total=lines[lines.length-1].t+400;
+  lines.forEach(l=>{
+    setTimeout(()=>{
+      const d=document.createElement('div');
+      d.className='line '+l.cls;
+      d.textContent=l.txt;
+      body.appendChild(d);
+      requestAnimationFrame(()=>d.classList.add('show'));
+      body.scrollTop=body.scrollHeight;
+      prog.style.width=((l.t/total)*100)+'%';
+    },l.t);
+  });
+  setTimeout(()=>{
+    prog.style.width='100%';
+    btn.textContent='↺ Run Again';
+    btn.disabled=false;
+    btn.onclick=()=>location.reload();
+  },total);
+}
+</script>
+</body>
+</html>
